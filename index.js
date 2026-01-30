@@ -2,14 +2,23 @@ const express = require("express");
 const axios = require("axios");
 
 const app = express();
+
+/* =========================
+   MIDDLEWARE
+========================= */
 app.use(express.json());
 
-/*
-====================================
-CREATE QRIS PAYMENT
-Dipanggil oleh bot panel
-====================================
-*/
+/* =========================
+   HEALTH CHECK (WAJIB)
+   Supaya Railway tahu server hidup
+========================= */
+app.get("/", (req, res) => {
+  res.status(200).send("Pakasir Railway Backend Active");
+});
+
+/* =========================
+   CREATE PAYMENT (BOT CALL)
+========================= */
 app.post("/create-payment", async (req, res) => {
   try {
     const { project, apiKey, order_id, amount } = req.body;
@@ -28,6 +37,12 @@ app.post("/create-payment", async (req, res) => {
         order_id,
         amount,
         api_key: apiKey
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        timeout: 10000
       }
     );
 
@@ -38,6 +53,7 @@ app.post("/create-payment", async (req, res) => {
 
   } catch (err) {
     console.log("CREATE PAYMENT ERROR:", err.message);
+
     res.status(500).json({
       success: false,
       message: "Gagal membuat invoice"
@@ -45,25 +61,22 @@ app.post("/create-payment", async (req, res) => {
   }
 });
 
-/*
-====================================
-WEBHOOK DARI PAKASIR
-====================================
-*/
+/* =========================
+   WEBHOOK DARI PAKASIR
+========================= */
 app.post("/pakasir/webhook", (req, res) => {
-  console.log("Webhook masuk:", req.body);
+  console.log("Webhook Pakasir masuk:");
+  console.log(req.body);
 
-  // nanti bisa diteruskan ke bot kalau mau
-  res.send("OK");
+  // nanti bisa diteruskan ke bot panel
+  res.status(200).send("OK");
 });
 
-/*
-====================================
-START SERVER
-====================================
-*/
-const PORT = process.env.PORT || 3000;
+/* =========================
+   START SERVER
+========================= */
+const PORT = process.env.PORT;
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log("Backend Railway aktif di port", PORT);
 });
