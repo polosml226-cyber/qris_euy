@@ -9,15 +9,14 @@ const app = express();
 app.use(express.json());
 
 /* =========================
-   HEALTH CHECK (WAJIB)
-   Supaya Railway tahu server hidup
+   HEALTH CHECK
 ========================= */
 app.get("/", (req, res) => {
   res.status(200).send("Pakasir Railway Backend Active");
 });
 
 /* =========================
-   CREATE PAYMENT (BOT CALL)
+   CREATE PAYMENT
 ========================= */
 app.post("/create-payment", async (req, res) => {
   try {
@@ -39,9 +38,7 @@ app.post("/create-payment", async (req, res) => {
         api_key: apiKey
       },
       {
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         timeout: 10000
       }
     );
@@ -62,18 +59,17 @@ app.post("/create-payment", async (req, res) => {
 });
 
 /* =========================
-   WEBHOOK DARI PAKASIR
+   WEBHOOK PAKASIR
 ========================= */
 app.post("/pakasir/webhook", (req, res) => {
   console.log("WEBHOOK MASUK:", req.body);
   res.send("OK");
 });
 
-
 /* =========================
    START SERVER
 ========================= */
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log("Backend Railway aktif di port", PORT);
