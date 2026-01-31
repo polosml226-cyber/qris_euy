@@ -65,12 +65,10 @@ app.post("/create-payment", async (req, res) => {
    WEBHOOK DARI PAKASIR
 ========================= */
 app.post("/pakasir/webhook", (req, res) => {
-  console.log("Webhook Pakasir masuk:");
-  console.log(req.body);
-
-  // nanti bisa diteruskan ke bot panel
-  res.status(200).send("OK");
+  console.log("WEBHOOK MASUK:", req.body);
+  res.send("OK");
 });
+
 
 /* =========================
    START SERVER
